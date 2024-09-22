@@ -22,7 +22,7 @@ const isAuthenticated = async () => {
 
   if (userToken && sessionId) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/pdf/auth/verify-token`, {}, {
+      const response = await axios.post(`${API_BASE_URL}/users/verify-token`, {}, {
         headers: { 'Authorization': `Bearer ${userToken}` }
       });
       return response.status === 200;

@@ -11,3 +11,19 @@ export const buttonStyles = {
     },
 };
 
+export const backgroundNavBar = {
+    backgroundColor: "#fff",
+    color: "#000",
+};
+
+export const paperStyle = {
+    display: "flex",
+	borderRadius: 2,
+    backgroundColor: BACKGROUND_PAPER,
+    width: "95%",
+    height: "100%",
+    color: "WHITE",
+    margin: "20px",
+    borderColor: "WHITE",
+    padding: "20px"
+}
