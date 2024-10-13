@@ -7,35 +7,41 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { backgroundNavBar } from '../utils';
 import icon from '../images/Background.png'
 import { useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-const pages = ['Tela Incial', 'Documentos'];
-const settings = ['Logout'];
+import { useUser } from './UserContext'
 
 function NavBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const { userRole } = useUser();
     const navigate = useNavigate();
+
+    const doctorPages = ['Análise', 'Pacientes'];
+    const patientPages = ['Tela Inicial', 'Documentos'];
+    const settings = ['Logout'];
+
+    const pages = userRole === 'Médico' ? doctorPages : patientPages;
   
     const handleMenuItemClick = (page) => {
       if (page === "Tela Inicial"){
         navigate('/');
+      } else if (page === "Documentos"){
+        navigate('/documents')
+      } else if (page === "Análise"){
+        navigate('/analise')
+      } else if (page === "Pacientes"){
+        navigate('/pacientes')
       }
     };
   
     const handleMenuItemClickSettings = (setting) => {
-      if (setting === "Perfil"){
-        navigate('/admin');
-      }
-      else {
+      if (setting === "Logout"){
         localStorage.removeItem('userToken');
         navigate('/login');
       }
@@ -110,8 +116,8 @@ function NavBar() {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleMenuItemClick(page)}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                <MenuItem key={page} onClick={() => handleMenuItemClick(page)}>
+                  <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -120,7 +126,7 @@ function NavBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => handleMenuItemClick(page)}
                 sx={{ my: 2, color: 'black', display: 'block', marginLeft: "60px"}}
               >
                 {page}
@@ -150,8 +156,13 @@ function NavBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleMenuItemClickSettings}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography 
+                    textAlign="center"
+                    onClick={() => handleMenuItemClickSettings(setting)}
+                  >
+                    {setting}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>

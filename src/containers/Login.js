@@ -19,6 +19,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import InputAdornment from '@mui/material/InputAdornment';
 import PersonIcon from '@mui/icons-material/Person';
 import { buttonStyles, BACKGROUND_BUTTON, BACKGROUND_PAPER } from '../utils';
+import { useUser } from '../components/UserContext';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -41,6 +42,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
+  const { setUserRole } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +50,11 @@ export default function Login() {
       const response = await userLogin(username, password);
       localStorage.setItem('userToken', response.data.access);
       document.cookie = `sessionid=${response.data.sessionid}`;
-      navigate('/');
+      setUserRole(response.data.user_role)
+      if (response.data.user_role === 'Médico')
+        navigate('/analise')
+      else
+        navigate('/');
     } catch (error) {
       setOpen(true);
     }

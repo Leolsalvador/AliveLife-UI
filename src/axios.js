@@ -8,7 +8,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const getConfig = () => {
   const token = localStorage.getItem('userToken');
   return {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   };
 };
 
@@ -30,3 +30,33 @@ export const userLogin = async (username, password) => {
     throw error;
   }
 };
+
+
+export const getFiles = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/pdf/upload/`, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const getDiagnosis = async (id) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/diagnosis/generate/${id}`, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const uploadFile = async (formData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/pdf/upload/`, formData, getConfig());
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

@@ -35,6 +35,9 @@ export default function Home() {
                     </Grid>
                 </Grid>
             </Paper>
+            <Typography align="center" sx={{ marginTop: '20px', color: '#BDBDBD' }}>
+                Copyright © Alive&Life 2024.
+            </Typography>
         </React.Fragment>
     );
 }

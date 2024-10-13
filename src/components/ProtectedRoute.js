@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
+import { useUser } from './UserContext';
+import LoadingScreen from './LoadingScreen';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -16,6 +18,10 @@ function getSessionIdFromCookies() {
   return null;
 }
 
+const removeSessionIdFromCookies = () => {
+  document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+};
+
 const isAuthenticated = async () => {
   const userToken = localStorage.getItem('userToken');
   const sessionId = getSessionIdFromCookies();
@@ -27,14 +33,17 @@ const isAuthenticated = async () => {
       });
       return response.status === 200;
     } catch (error) {
+      localStorage.removeItem('userToken');
+      removeSessionIdFromCookies();
       return false;
     }
   }
   return false;
 };
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles }) => {
   const [isAuth, setIsAuth] = useState(null);
+  const { userRole } = useUser();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -44,11 +53,17 @@ const ProtectedRoute = ({ children }) => {
     checkAuth();
   }, []);
 
-  if (isAuth === null) {
-    return <div>Loading...</div>;
+  if (isAuth === null || userRole === null) {
+    return <LoadingScreen/>;
   }
 
   if (!isAuth) {
+    localStorage.removeItem('userToken');
+    removeSessionIdFromCookies();
+    return <Navigate to="/login" />;
+  }
+
+  if (!allowedRoles.includes(userRole)) {
     return <Navigate to="/login" />;
   }
 

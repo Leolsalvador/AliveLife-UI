@@ -1,6 +1,7 @@
 export const BACKGROUND_BUTTON = "#038C65";
 export const BACKGROUND_BUTTON_HOVER = "#64C827";
 export const BACKGROUND_PAPER = "#0C3B40";
+export const BACKGROUND_BUTTON_DISABLE = "#D9D9D9"
 
 
 export const buttonStyles = {
@@ -26,4 +27,13 @@ export const paperStyle = {
     margin: "20px",
     borderColor: "WHITE",
     padding: "20px"
+}
+
+
+export const paperStyleInternal = {
+    backgroundColor: '#00382C',
+    padding: '40px',
+    textAlign: 'center',
+    borderRadius: '8px',
+    cursor: 'pointer',
 }
