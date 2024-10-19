@@ -1,29 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Typography, Avatar, Button, TextField, Modal } from '@mui/material';
-import { buttonStyles, BACKGROUND_BUTTON, BACKGROUND_BUTTON_DISABLE} from '../utils';
+import { buttonStyles, BACKGROUND_BUTTON, BACKGROUND_BUTTON_DISABLE, modalStyle} from '../utils';
 
-// Estilo da modal
-const modalStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 669,
-    height: "50%",
-    backgroundColor: 'white',
-    borderRadius: '10px',
-    boxShadow: 24,
-    padding: '20px',
-};
 
-const patients = [
-    { name: 'Leonardo de Alcantara', avatar: '/path-to-avatar1.png' },
-    { name: 'Beatriz Alvarenga', avatar: '/path-to-avatar2.png' },
-    { name: 'Iane Ramos', avatar: '/path-to-avatar3.png' },
-    { name: 'Athos Almeida', avatar: '/path-to-avatar4.png' },
-];
-
-export default function PatientSelectionModal({ open, handleClose, onSelectPatient }) {
+export default function PatientSelectionModal({ open, handleClose, onSelectPatient, patients }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedPatient, setSelectedPatient] = useState(null);
 
@@ -33,7 +13,7 @@ export default function PatientSelectionModal({ open, handleClose, onSelectPatie
 
     const handleSelectAndClose = () => {
         if (selectedPatient) {
-            onSelectPatient(selectedPatient.name);
+            onSelectPatient(selectedPatient);
             handleClose();
         }
     };

@@ -2,28 +2,29 @@ import React, { useEffect, useState } from "react";
 import Menu from "../components/Menu";
 import { Grid, Paper, Typography, Button, Box } from '@mui/material';
 import { paperStyle } from "../utils";
-import { getFiles, getDiagnosis, getSpecificFiles } from "../axios";
+import { getSpecificFiles, getDiagnosis } from "../axios";
 import selectImg from "../images/select.png"
-import LoadingScreen from "../components/LoadingScreen";
+import { useLocation } from "react-router-dom";
 
-
-export default function Documents() {
+export default function DocumentsPatients() {
     const [loading, setLoading] = useState(false);
     const [files, setFiles] = useState([]);
     const [diagnosis, setDiagnosis] = useState("");
     const [patient, setPatient] = useState("");
     const [medical, setMedical] = useState("");
     const [fileName, setFileName] = useState("");
+    const location = useLocation();
+    const { patientId } = location.state || {};
 
     useEffect(() => {
-        listFiles();
+        listFilesMedical();
     }, [])
 
-    const listFiles = async () => {
+    const listFilesMedical = async () => {
         setLoading(true);
 
         try{
-            const response = await getFiles();
+            const response = await getSpecificFiles(patientId);
             setFiles(response.data);
         } catch (err) {
             console.log(err);
@@ -50,10 +51,6 @@ export default function Documents() {
         } finally {
             setLoading(false);
         }
-    }
-
-    if (loading) {
-        return <LoadingScreen message="Carregando Dados"/>;
     }
 
     return (
@@ -98,7 +95,6 @@ export default function Documents() {
                                 Selecione um exame
                             </Typography>
                         
-                            {/* Adicionando a imagem abaixo do texto */}
                             <Box
                                 component="img"
                                 src={selectImg}

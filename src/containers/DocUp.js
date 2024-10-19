@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Typography, Paper, Box, Button } from '@mui/material';
 import Menu from '../components/Menu';
 import { paperStyle, buttonStyles, paperStyleInternal } from '../utils';
-import { uploadFile } from '../axios';
+import { uploadFile, getPatients, deleteFile, diagnosisGenerate } from '../axios';
 import LoadingScreen from '../components/LoadingScreen';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PatientSelectionModal from '../components/PatientSelectionModal';
+
 
 export default function DocUp() {
     const location = useLocation();
@@ -13,11 +14,28 @@ export default function DocUp() {
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState('');
     const [openModal, setOpenModal] = useState(false);
+    
+    const [patients, setPatients] = useState([]);
+    const [idFile, setIdFile] = useState(0);
     const [selectedPatient, setSelectedPatient] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        listPatients();
         if (content === '') postUploadFile();
     }, [content]);
+
+    const listPatients = async () => {
+        setLoading(true);
+
+        try {
+            const response = await getPatients();
+            setPatients(response.data.patients)
+            setLoading(false);
+        } catch (error) {
+            console.error('Erro no upload:', error);
+        }
+    };
 
     const postUploadFile = async () => {
         setLoading(true);
@@ -29,10 +47,42 @@ export default function DocUp() {
         try {
             const response = await uploadFile(formData);
             setContent(response.content);
+            setIdFile(response.id);
             setLoading(false);
+        } catch (error) {
+            navigate('/analise', { state: { errorPage: true } })
+            console.error('Erro no upload:', error);
+        }
+    };
+
+    const cancelOperation = async () => {
+        setLoading(true);
+
+        try {
+            const response = await deleteFile(idFile);
+            console.log(response);
+            setLoading(false);
+            navigate('/analise')
         } catch (error) {
             console.error('Erro no upload:', error);
         }
+    };
+
+    const confirmUpload = async () => {
+        setLoading(true);
+
+        const data = {
+            "idUser": selectedPatient.id
+        }
+
+        try {
+            const response = await diagnosisGenerate(idFile, data);
+            setLoading(false);
+            navigate('/diagnosis', {state: { content: response, idFile }})
+            // navigate('/analise', { state: { successPage: true } })
+        } catch (error) {
+            console.error('Erro no upload:', error);
+        }        
     };
 
     const handleOpenModal = () => setOpenModal(true);
@@ -44,7 +94,7 @@ export default function DocUp() {
     };
 
     if (loading) {
-        return <LoadingScreen />;
+        return <LoadingScreen message="Gerando o diagnóstico"/>;
     }
 
     return (
@@ -61,10 +111,17 @@ export default function DocUp() {
                 <Button
                     variant="contained"
                     sx={buttonStyles}
-                    onClick={handleOpenModal}
+                    onClick={confirmUpload}
                     disabled={!selectedPatient}
                 >
                     Confirmar
+                </Button>
+                <Button
+                    variant="contained"
+                    sx={{backgroundColor: "red"}}
+                    onClick={cancelOperation}
+                >
+                    Cancelar
                 </Button>
             </Box>
             <Paper sx={{ ...paperStyle, padding: '50px' }}>
@@ -85,7 +142,7 @@ export default function DocUp() {
                         {selectedPatient && (
                             <Box sx={{ backgroundColor: '#364257', padding: '20px', borderRadius: '8px', color: 'white' }}>
                                 <Typography variant="body1">
-                                    <strong>Paciente:</strong><br /> {selectedPatient}
+                                    <strong>Paciente:</strong><br /> {selectedPatient.name}
                                 </Typography>
                             </Box>
                         )}
@@ -101,14 +158,16 @@ export default function DocUp() {
                 </Grid>
             </Paper>
             <Typography align="center" sx={{ marginTop: '20px', color: '#BDBDBD' }}>
-                Copyright © Alive4Life 2024.
+                Copyright © Alive&Life 2024.
             </Typography>
 
             <PatientSelectionModal
                 open={openModal}
                 handleClose={handleCloseModal}
                 onSelectPatient={handleSelectPatient}
+                patients={patients}
             />
+
         </React.Fragment>
     );
 }

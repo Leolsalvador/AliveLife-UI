@@ -12,7 +12,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { backgroundNavBar } from '../utils';
 import icon from '../images/Background.png'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useUser } from './UserContext'
 
@@ -21,6 +21,8 @@ function NavBar() {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const { userRole } = useUser();
     const navigate = useNavigate();
+    const location = useLocation(); // Hook para pegar a URL atual
+    const [selectedPage, setSelectedPage] = React.useState(''); // Adicione o estado para a página selecionada
 
     const doctorPages = ['Análise', 'Pacientes'];
     const patientPages = ['Tela Inicial', 'Documentos'];
@@ -28,7 +30,23 @@ function NavBar() {
 
     const pages = userRole === 'Médico' ? doctorPages : patientPages;
   
+    // Atualize o estado 'selectedPage' baseado na URL atual
+    React.useEffect(() => {
+      const path = location.pathname;
+
+      if (path.includes('analise')) {
+        setSelectedPage('Análise');
+      } else if (path.includes('patients')) {
+        setSelectedPage('Pacientes');
+      } else if (path === '/') {
+        setSelectedPage('Tela Inicial');
+      } else if (path.includes('documents')) {
+        setSelectedPage('Documentos');
+      }
+    }, [location]);
+
     const handleMenuItemClick = (page) => {
+      setSelectedPage(page); // Defina a página selecionada
       if (page === "Tela Inicial"){
         navigate('/');
       } else if (page === "Documentos"){
@@ -36,7 +54,7 @@ function NavBar() {
       } else if (page === "Análise"){
         navigate('/analise')
       } else if (page === "Pacientes"){
-        navigate('/pacientes')
+        navigate('/patients')
       }
     };
   
@@ -127,7 +145,13 @@ function NavBar() {
               <Button
                 key={page}
                 onClick={() => handleMenuItemClick(page)}
-                sx={{ my: 2, color: 'black', display: 'block', marginLeft: "60px"}}
+                sx={{ 
+                  my: 2, 
+                  color: 'black', 
+                  display: 'block', 
+                  marginLeft: "60px",
+                  borderBottom: selectedPage === page ? '2px solid green' : 'none'  // Adicione essa linha
+                }}
               >
                 {page}
               </Button>

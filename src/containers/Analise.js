@@ -1,19 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Typography, Paper, Box } from '@mui/material';
 import Menu from '../components/Menu';
 import uploadIcon from '../images/uploadIcon.png';
 import { paperStyle, paperStyleInternal } from '../utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import UploadFile from '../components/UploadFile';
+import ErrorModal from '../components/ErrorModal';
+import SuccessModal from '../components/SuccessModal';
 
 export default function UploadDocument() {
     const navigate = useNavigate();
-    const [dataFile, setDataFile] = React.useState(null)
+    const [dataFile, setDataFile] = useState(null)
+    const [openErrorModal, setOpenErrorModal] = useState(false);
+    const [openSuccessModal, setOpenSuccessModal] = useState(false);
+    const location = useLocation();
+    const [errorMessage, setErrorMessage] = useState('');
+    const { errorPage } = location.state || {};
+    const { successPage } = location.state || {};
 
     useEffect(() => {
         if (dataFile)
             navigate('/docup', { state: { dataFile } });
-    })
+
+        if (errorPage) {
+            setErrorMessage("Esse documento ja existe")
+            setOpenErrorModal(true);
+        };
+
+        if (successPage)
+            setOpenSuccessModal(true);
+
+    }, [dataFile, errorPage, navigate, successPage])
+
+    const handleCloseErrorModal = () => {
+        setOpenErrorModal(false);
+    };
+
+    const handleCloseSuccessModal = () => setOpenSuccessModal(false);
 
     return (
         <React.Fragment>
@@ -58,6 +81,17 @@ export default function UploadDocument() {
             <Typography align="center" sx={{ marginTop: '20px', color: '#BDBDBD' }}>
                 Copyright © Alive&Life 2024.
             </Typography>
+
+            <ErrorModal
+                open={openErrorModal}
+                handleClose={handleCloseErrorModal}
+                errorMessage={errorMessage}
+            />
+
+            <SuccessModal
+                open={openSuccessModal}
+                handleClose={handleCloseSuccessModal}
+            />
         </React.Fragment>
     );
 }

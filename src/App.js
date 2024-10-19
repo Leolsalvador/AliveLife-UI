@@ -7,6 +7,9 @@ import Home from './containers/Home';
 import Docs from './containers/Docs';
 import Analise from './containers/Analise';
 import DocUp from './containers/DocUp';
+import Diagnosis from './containers/Diagnosis';
+import Patients from './containers/Patients';
+import DocumentsPatients from './containers/DocsPatient';
 
 
 export default function App() {
@@ -30,9 +33,24 @@ export default function App() {
                 <Analise/>
               </ProtectedRoute>
             }/>
-             <Route path="/docup" element={
+            <Route path="/docup" element={
               <ProtectedRoute allowedRoles={['Médico']}>
                 <DocUp/>
+              </ProtectedRoute>
+            }/>
+            <Route path="/diagnosis" element={
+              <ProtectedRoute allowedRoles={['Médico']}>
+                <Diagnosis/>
+              </ProtectedRoute>
+            }/>
+            <Route path="/patients" element={
+              <ProtectedRoute allowedRoles={['Médico']}>
+                <Patients/>
+              </ProtectedRoute>
+            }/>
+            <Route path="/docs_patients" element={
+              <ProtectedRoute allowedRoles={['Médico']}>
+                <DocumentsPatients/>
               </ProtectedRoute>
             }/>
           </Routes>

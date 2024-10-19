@@ -37,3 +37,26 @@ export const paperStyleInternal = {
     borderRadius: '8px',
     cursor: 'pointer',
 }
+
+
+export const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 669,
+    height: "50%",
+    backgroundColor: 'white',
+    borderRadius: '10px',
+    boxShadow: 24,
+    padding: '20px',
+}
+
+
+export const searchBoxStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    marginBottom: '30px',
+    marginLeft: '30px'
+};

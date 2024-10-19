@@ -42,6 +42,16 @@ export const getFiles = async () => {
 };
 
 
+export const getSpecificFiles = async (id) => {
+  try {
+    const response = await axios.patch(`${API_BASE_URL}/pdf/upload/${id}`, {}, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 export const getDiagnosis = async (id) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/diagnosis/generate/${id}`, getConfig());
@@ -59,4 +69,54 @@ export const uploadFile = async (formData) => {
   } catch (error) {
     throw error;
   }
+};
+
+
+export const getPatients = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/patients/`, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const deleteFile = async (id) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/pdf/delete/${id}/`, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
 }
+
+
+export const diagnosisGenerate = async (id, data) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/diagnosis/generate/${id}/`, data, getConfig());
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const updateDiagnosis = async (id) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/diagnosis/generate/${id}/`,{}, getConfig());
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const approvedDiagnosis = async (id) => {
+  try {
+    const response = await axios.patch(`${API_BASE_URL}/diagnosis/generate/${id}/`,{}, getConfig());
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

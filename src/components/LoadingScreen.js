@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
-function LoadingScreen() {
+function LoadingScreen(props) {
   return (
     <Box
       display="flex"
@@ -13,7 +13,7 @@ function LoadingScreen() {
     >
       <CircularProgress size={100} />
       <Typography variant="h5" component="h2" sx={{color: "#000"}}>
-        Load data, please wait...
+        {props.message}
       </Typography>
     </Box>
   );
