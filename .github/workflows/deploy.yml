@@ -1,9 +1,8 @@
-name: Deploy React App
+name: Deploy React App with Docker
 
 on:
   push:
-    branches:
-      - main  # Ou outra branch de deploy
+    branches: [ "main" ]
 
 jobs:
   build-and-deploy:
@@ -13,10 +12,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Build React App
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
       run: |
-        npm install
-        CI=false npm run build
+        docker build -t leolsalvador1/alivelife:latest .
+        docker push leolsalvador1/alivelife:latest
 
     - name: Deploy to DigitalOcean Droplet
       uses: appleboy/ssh-action@v0.1.7
@@ -26,22 +34,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         script: |
-          # Instalar Docker Compose se não estiver instalado
-          if ! [ -x "$(command -v docker-compose)" ]; then
-            curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
-          fi
-
-          # Criar ou atualizar o diretório no servidor
-          mkdir -p /var/www/react-app
-          
-          # Parar e remover containers antigos, se existirem
-          docker-compose -f /var/www/react-app/docker-compose.yml down || true
-
-          # Subir os novos arquivos para o servidor
-          rm -rf /var/www/react-app/*
-          scp -r build/* root@${{ secrets.DROPLET_IP }}:/var/www/react-app/
-
-          # Construir e iniciar os containers
-          cd /var/www/react-app
-          docker-compose up -d --build
+          docker pull leolsalvador1/alivelife:latest
+          docker stop react-app || true
+          docker rm react-app || true
+          docker run -d -p 80:80 --name react-app leolsalvador1/alivelife:latest
