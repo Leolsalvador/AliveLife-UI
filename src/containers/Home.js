@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid'
 import { Paper, Typography } from '@mui/material';
 import { paperStyle } from "../utils";
 import { BACKGROUND_BUTTON } from "../utils";
-import Video from "../images/video.mp4"
+// import Video from "../images/video.mp4"
 
 export default function Home() {
     return (
@@ -27,12 +27,12 @@ export default function Home() {
                             Vídeo de Apresentação
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
+                    {/* <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
                         <video width="800" height="450" controls>
                             <source src={Video} type="video/mp4" />
                             Seu navegador não suporta a tag de vídeo.
                         </video>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </Paper>
             <Typography align="center" sx={{ marginTop: '20px', color: '#BDBDBD' }}>
