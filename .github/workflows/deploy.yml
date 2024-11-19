@@ -3,35 +3,35 @@ name: Deploy React App
 on:
   push:
     branches:
-      - main # Ou qualquer branch que você use para deploy
+      - main  # Ou outra branch de deploy
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Fazer checkout do repositório
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # 2. Configurar o Docker Buildx (para builds multiplataforma, opcional)
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    # 3. Build da imagem Docker
-    - name: Build Docker Image
+    - name: Build React App
       run: |
-        docker build -t react-app:latest .
+        npm install
+        npm run build
 
-    # 4. Configurar SSH para o deploy remoto
     - name: Deploy to DigitalOcean Droplet
       uses: appleboy/ssh-action@v0.1.7
       with:
-        host: ${{ secrets.DROPLET_IP }} # IP do servidor
-        username: root # Usuário do servidor
-        key: ${{ secrets.SSH_PRIVATE_KEY }} # Chave privada SSH
-        port: 22 # Porta SSH padrão
+        host: ${{ secrets.DROPLET_IP }}
+        username: root
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
         script: |
+          # Instalar Docker Compose se não estiver instalado
+          if ! [ -x "$(command -v docker-compose)" ]; then
+            curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+          fi
+
           # Criar ou atualizar o diretório no servidor
           mkdir -p /var/www/react-app
           
@@ -40,7 +40,7 @@ jobs:
 
           # Subir os novos arquivos para o servidor
           rm -rf /var/www/react-app/*
-          scp -r ./* root@${{ secrets.DROPLET_IP }}:/var/www/react-app/
+          scp -r build/* root@${{ secrets.DROPLET_IP }}:/var/www/react-app/
 
           # Construir e iniciar os containers
           cd /var/www/react-app
