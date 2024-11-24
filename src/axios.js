@@ -120,3 +120,23 @@ export const approvedDiagnosis = async (id) => {
     throw error;
   }
 };
+
+
+export const getUsers = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/all`, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const createUser = async (data) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/users/create/`, data, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
