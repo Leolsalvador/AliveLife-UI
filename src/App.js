@@ -10,7 +10,7 @@ import DocUp from './containers/DocUp';
 import Diagnosis from './containers/Diagnosis';
 import Patients from './containers/Patients';
 import DocumentsPatients from './containers/DocsPatient';
-
+import Users from './containers/Users';
 
 export default function App() {
     return (
@@ -51,6 +51,11 @@ export default function App() {
             <Route path="/docs_patients" element={
               <ProtectedRoute allowedRoles={['Médico']}>
                 <DocumentsPatients/>
+              </ProtectedRoute>
+            }/>
+            <Route path="/users" element={
+              <ProtectedRoute allowedRoles={['Atendente']}>
+                <Users/>
               </ProtectedRoute>
             }/>
           </Routes>

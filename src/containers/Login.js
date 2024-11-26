@@ -53,6 +53,10 @@ export default function Login() {
       setUserRole(response.data.user_role)
       if (response.data.user_role === 'Médico')
         navigate('/analise')
+      else if (response.data.user_role === 'Paciente')
+        navigate('/documents')
+      else if (response.data.user_role === 'Atendente')
+        navigate('/users')
       else
         navigate('/');
     } catch (error) {

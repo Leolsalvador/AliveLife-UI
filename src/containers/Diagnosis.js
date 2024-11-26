@@ -39,7 +39,7 @@ export default function Diagnosis() {
     }
 
     if (loading) {
-        return <LoadingScreen message="Gerando o diagnóstico"/>;
+        return <LoadingScreen message="Gerando pré-diagnóstico"/>;
     }
 
     return (

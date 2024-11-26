@@ -120,3 +120,52 @@ export const approvedDiagnosis = async (id) => {
     throw error;
   }
 };
+
+export const getUsers = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/all`, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const createUser = async (data) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/users/create/`, data, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const getUserUpdate = async (id) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/update/${id}/`, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const updateUser = async (data, id) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/users/update/${id}/`, data, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+export const inativeUser = async (id) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/users/update/${id}/`, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
