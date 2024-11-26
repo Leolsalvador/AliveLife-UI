@@ -26,9 +26,12 @@ function NavBar() {
 
     const doctorPages = ['Análise', 'Pacientes'];
     const patientPages = ['Tela Inicial', 'Documentos'];
+    const atendentesPages = ['Usuários'];
     const settings = ['Logout'];
 
-    const pages = userRole === 'Médico' ? doctorPages : patientPages;
+    // const pages = userRole === 'Médico' ? doctorPages : patientPages;
+    const pages = userRole === 'Médico' ? doctorPages : userRole === 'Paciente' ? patientPages : atendentesPages;
+
   
     // Atualize o estado 'selectedPage' baseado na URL atual
     React.useEffect(() => {
