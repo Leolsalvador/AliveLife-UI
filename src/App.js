@@ -12,7 +12,6 @@ import Patients from './containers/Patients';
 import DocumentsPatients from './containers/DocsPatient';
 import Users from './containers/Users';
 
-
 export default function App() {
     return (
       <UserProvider>

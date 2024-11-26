@@ -121,7 +121,6 @@ export const approvedDiagnosis = async (id) => {
   }
 };
 
-
 export const getUsers = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/users/all`, getConfig());
