@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Menu from "../components/Menu";
-import { Grid, Paper, Typography, Box, Button, TextField, Select, MenuItem } from "@mui/material";
+import MenuTab from "../components/Menu";
+import { Grid, Paper, Typography, Box, Button, TextField, Select, MenuItem, IconButton, Menu } from "@mui/material";
 import LoadingScreen from "../components/LoadingScreen";
-import { getUsers } from "../axios";
+import { getUsers, getUserUpdate, inativeUser } from "../axios";
 import UserRegistrationModal from "../components/UserRegistrationModal";
 import { buttonStyles } from "../utils";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function Users() {
     const [loading, setLoading] = useState(false);
@@ -12,9 +13,23 @@ export default function Users() {
     const [filter, setFilter] = useState("Todos");
     const [search, setSearch] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
+    const [dataEdit, setDataEdit] = useState(null);
 
-    const handleOpenModal = () => setIsModalOpen(true);
-    const handleCloseModal = () => setIsModalOpen(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const menuOpen = Boolean(anchorEl);
+
+    const handleOpenModal = (user = null) => {
+        setEditingUser(user);
+        handleGetUserUpdate(user?.id);
+        setIsModalOpen(true);
+    };
+    
+    const handleCloseModal = () => {
+        setEditingUser(null);
+        setIsModalOpen(false);
+    };
 
     useEffect(() => {
         fetchUsers();
@@ -47,6 +62,39 @@ export default function Users() {
         setSearch(event.target.value);
     };
 
+    const handleMenuOpen = (event, user) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedUser(user);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        setSelectedUser(null);
+    };
+
+    const handleInactivateUser = async (user) => {
+        try {
+            await inativeUser(user.id);
+            window.location.reload();
+        } catch (error) {
+            console.error("Erro ao inativar usuário:", error);
+        }
+    };
+
+    const handleGetUserUpdate = async (id) => {
+        try {
+            const response = await getUserUpdate(id);
+            if (response && response.data) {
+                setDataEdit(response.data);
+                setIsModalOpen(true);
+            } else {
+                console.error("A resposta da API não contém 'user'");
+            }
+        } catch (error) {
+            console.error("Erro ao buscar usuário:", error);
+        }
+    };
+
     const filteredUsers = Array.isArray(users)
         ? users.filter((user) => {
               const matchesFilter = filter === "Todos" || user.role === filter;
@@ -61,8 +109,13 @@ export default function Users() {
 
     return (
         <React.Fragment>
-            <UserRegistrationModal open={isModalOpen} handleClose={handleCloseModal}/>
-            <Menu />
+            <UserRegistrationModal
+                open={isModalOpen}
+                handleClose={handleCloseModal}
+                user={editingUser} 
+                data={dataEdit}
+            />
+            <MenuTab />
             <Paper sx={{ margin: "20px", padding: "20px" }}>
                 <Typography variant="h4" sx={{ marginBottom: "20px", textAlign: "center" }}>
                     Usuários
@@ -125,24 +178,40 @@ export default function Users() {
                                         alignItems: "center",
                                     }}
                                 >
-                                    <Grid item xs={4}>
-                                        {user.name}
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        {user.additional_info.cpf || "Não informado"}
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        {user.role || "Sem papel definido"}
-                                    </Grid>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={4}>{user.name}</Grid>
+                                    <Grid item xs={3}>{user.additional_info.cpf || "Não informado"}</Grid>
+                                    <Grid item xs={3}>{user.role || "Sem papel definido"}</Grid>
+                                    <Grid item xs={2} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                         <Typography
                                             sx={{
-                                                color: user.status === "Ativo" ? "green" : "red",
+                                                color: user.status ? "green" : "red",
                                             }}
                                         >
-                                            {user.status || "Indefinido"}
+                                            {user.status ? "Ativo" : "Inativo"}
                                         </Typography>
+                                        <IconButton onClick={(event) => handleMenuOpen(event, user)}>
+                                            <MoreVertIcon />
+                                        </IconButton>
                                     </Grid>
+
+                                    <Menu
+                                        anchorEl={anchorEl}
+                                        open={menuOpen}
+                                        onClose={handleMenuClose}
+                                        PaperProps={{
+                                            style: {
+                                                maxHeight: 200,
+                                                width: "150px",
+                                            },
+                                        }}
+                                    >
+                                        <MenuItem onClick={() => { handleMenuClose(); handleOpenModal(selectedUser); }}>
+                                            Editar
+                                        </MenuItem>
+                                        <MenuItem onClick={() => { handleMenuClose(); handleInactivateUser(selectedUser); }}>
+                                            {selectedUser?.status ? "Inativar" : "Ativar"}
+                                        </MenuItem>
+                                    </Menu>
                                 </Grid>
                             ))
                         ) : (

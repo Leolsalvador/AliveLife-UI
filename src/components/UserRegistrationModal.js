@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Box,
@@ -11,9 +11,10 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { createUser } from "../axios";
+import { createUser, updateUser } from "../axios";
+import InputMask from "react-input-mask";
 
-export default function UserRegistrationModal({ open, handleClose }) {
+export default function UserRegistrationModal({ open, handleClose, data }) {
   const [role, setRole] = useState("Paciente");
   const [formData, setFormData] = useState({
     name: "",
@@ -25,19 +26,84 @@ export default function UserRegistrationModal({ open, handleClose }) {
     ufCrm: "",
   });
 
+  useEffect(() => {
+    if (data) {
+      setFormData({
+        name: data.name || "",
+        surname: data.surname || "",
+        email: data.additional_info.email || "",
+        cpf: data.additional_info.cpf || "",
+        birthDate: data.additional_info.data_nascimento || "",
+        crm: data.additional_info.crm || "",
+        ufCrm: data.additional_info.uf_crm || "",
+      });
+      setRole(data.role || "Paciente");
+    }
+  }, [data]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  
+    let formattedValue = value;
+  
+    if (name === "cpf") {
+      formattedValue = value.replace(/\D/g, "");
+      if (formattedValue.length <= 11) {
+        formattedValue = formattedValue
+          .replace(/(\d{3})(\d)/, "$1.$2")
+          .replace(/(\d{3})(\d)/, "$1.$2")
+          .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+      }
+    }
+  
+    if (name === "birthDate") {
+      formattedValue = value.replace(/\D/g, "");
+      if (formattedValue.length <= 8) {
+        formattedValue = formattedValue
+          .replace(/(\d{2})(\d)/, "$1/$2")
+          .replace(/(\d{2})(\d)/, "$1/$2");
+      }
+    }
+  
+    setFormData({ ...formData, [name]: formattedValue });
   };
 
-  const handleSubmit = () => {
-    try {
-      const response = createUser({ ...formData, role });
-      console.log("Usuário criado com sucesso:", response);
-    } catch (error) {
-      console.error("Erro ao criar usuário:", error);
+  const handleSubmit = async () => {
+    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+  
+    if (!cpfRegex.test(formData.cpf)) {
+      alert("CPF inválido. Use o formato XXX.XXX.XXX-XX.");
+      return;
+    }
+  
+    if (!dateRegex.test(formData.birthDate)) {
+      alert("Data de nascimento inválida. Use o formato dd/mm/aaaa.");
+      return;
+    }
+    if (data) {
+      try {
+        const response = await updateUser({ ...formData }, data.id);
+        window.location.reload();
+      } catch (error) {
+        console.error("Erro ao criar usuário:", error);
+      }
+    } else {
+      try {
+        const response = await createUser({ ...formData, role });
+        window.location.reload();
+      } catch (error) {
+        console.error("Erro ao criar usuário:", error);
+      }
     }
     handleClose();
+  }; 
+
+  const handleRoleChange = (e) => {
+    setRole(e.target.value);
+    if (e.target.value === "Paciente") {
+      setFormData({ ...formData, crm: "", ufCrm: "" });
+    }
   };
 
   return (
@@ -62,7 +128,7 @@ export default function UserRegistrationModal({ open, handleClose }) {
         <RadioGroup
           row
           value={role}
-          onChange={(e) => setRole(e.target.value)}
+          onChange={handleRoleChange}
           sx={{ marginBottom: 2 }}
         >
           <FormControlLabel
@@ -71,9 +137,9 @@ export default function UserRegistrationModal({ open, handleClose }) {
             label="Paciente"
           />
           <FormControlLabel
-            value="Profissional"
+            value="Médico"
             control={<Radio />}
-            label="Profissional"
+            label="Médico"
           />
         </RadioGroup>
 
@@ -112,7 +178,14 @@ export default function UserRegistrationModal({ open, handleClose }) {
           onChange={handleInputChange}
           variant="outlined"
           margin="normal"
+          InputProps={{
+            inputComponent: InputMask,
+            inputProps: {
+              mask: "999.999.999-99",
+            },
+          }}
         />
+
         <TextField
           fullWidth
           label="Data de nascimento"
@@ -121,10 +194,15 @@ export default function UserRegistrationModal({ open, handleClose }) {
           onChange={handleInputChange}
           variant="outlined"
           margin="normal"
-          placeholder="dd/mm/aaaa"
+          InputProps={{
+            inputComponent: InputMask,
+            inputProps: {
+              mask: "99/99/9999",
+            },
+          }}
         />
 
-        {role === "Profissional" && (
+        {role === "Médico" && (
           <>
             <TextField
               fullWidth
