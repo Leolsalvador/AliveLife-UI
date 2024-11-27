@@ -65,7 +65,7 @@ export default function UploadDocument() {
                                     <Typography sx={{ color: '#BDBDBD', marginRight: 1 }}>
                                         ou
                                     </Typography>
-                                    <Box sx={{ margin: '0 10px' }}> {/* Pequeno ajuste na margem do botão */}
+                                    <Box sx={{ margin: '0 10px' }}>
                                         <UploadFile setDataFile={setDataFile} />
                                     </Box>
                                     <Typography sx={{ color: '#BDBDBD', marginLeft: 1 }}>

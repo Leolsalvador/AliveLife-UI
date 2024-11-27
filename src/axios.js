@@ -169,3 +169,13 @@ export const inativeUser = async (id) => {
     throw error;
   }
 };
+
+
+export const updateDiagnosisText = async (id, data) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/diagnosis/update-diagnosis/${id}/`, data, getConfig());
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

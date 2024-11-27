@@ -98,7 +98,6 @@ export default function Documents() {
                                 Selecione um exame
                             </Typography>
                         
-                            {/* Adicionando a imagem abaixo do texto */}
                             <Box
                                 component="img"
                                 src={selectImg}

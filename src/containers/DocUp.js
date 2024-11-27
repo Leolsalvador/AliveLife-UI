@@ -94,7 +94,7 @@ export default function DocUp() {
     };
 
     if (loading) {
-        return <LoadingScreen message="Gerando o diagnóstico"/>;
+        return <LoadingScreen message="Gerando o Pré-Diagnóstico"/>;
     }
 
     return (
@@ -130,12 +130,6 @@ export default function DocUp() {
                         <Box sx={{ backgroundColor: '#364257', padding: '20px', borderRadius: '8px', color: 'white', marginBottom: '20px' }}>
                             <Typography variant="body1">
                                 <strong>Nome do arquivo:</strong><br /> {dataFile.name}
-                            </Typography>
-                        </Box>
-
-                        <Box sx={{ backgroundColor: '#364257', padding: '20px', borderRadius: '8px', color: 'white', marginBottom: '20px' }}>
-                            <Typography variant="body1">
-                                <strong>Tamanho do arquivo:</strong><br /> {dataFile.size}
                             </Typography>
                         </Box>
 
