@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography, Paper, Box, Button } from '@mui/material';
+import { Grid, Typography, Paper, Box, Button, TextareaAutosize } from '@mui/material';
 import Menu from '../components/Menu';
 import { paperStyle, buttonStyles, paperStyleInternal } from '../utils';
-import { updateDiagnosis, approvedDiagnosis } from '../axios';
+import { updateDiagnosis, approvedDiagnosis, updateDiagnosisText } from '../axios';
 import LoadingScreen from '../components/LoadingScreen';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ export default function Diagnosis() {
     const { content: initialContent, idFile } = location.state || {};
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState(initialContent);
+    const [diagnosisEdit, setDiagnosisEdit] = useState(false);
     const navigate = useNavigate();
 
     const generateOther = async () => {
@@ -24,7 +25,7 @@ export default function Diagnosis() {
         } catch (error) {
             console.error('Erro no upload:', error);
         }
-    }
+    };
 
     const confirmDiagnosis = async () => {
         setLoading(true);
@@ -36,11 +37,40 @@ export default function Diagnosis() {
         } catch (error) {
             console.error('Erro no upload:', error);
         }        
-    }
+    };
+
+    const handleChange = (event) => {
+        setContent({
+            ...content,
+            diagnosis: event.target.value,
+        });
+
+        setDiagnosisEdit(true);
+    };
+
+    const handleChangeDiagnosis = async () => {
+        setLoading(true);
+
+        const data = {
+            diagnosis: content.diagnosis,
+        };
+
+        try {
+            const response = await updateDiagnosisText(content.id, data);
+            setContent(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Erro no upload:', error);
+        }
+        setDiagnosisEdit(false);
+    };
 
     if (loading) {
+        if (diagnosisEdit) {
+            return <LoadingScreen message="Salvando alterações"/>;
+        }
         return <LoadingScreen message="Gerando pré-diagnóstico"/>;
-    }
+    };
 
     return (
         <React.Fragment>
@@ -58,8 +88,18 @@ export default function Diagnosis() {
                     sx={buttonStyles}
                     onClick={generateOther}
                 >
-                    Gerar outro Diagnóstico
+                    Gerar outro Pré-Diagnóstico
                 </Button>
+                {diagnosisEdit && (
+                    <Button
+                        variant="contained"
+                        sx={buttonStyles}
+                        onClick={handleChangeDiagnosis}
+                    >
+                        Salvar Alterações
+                    </Button>    
+                )}
+
             </Box>
             <Paper sx={{ ...paperStyle, padding: '50px' }}>
                 <Grid container spacing={4}>
@@ -88,9 +128,22 @@ export default function Diagnosis() {
 
                     <Grid item xs={9}>
                         <Paper sx={paperStyleInternal}>
-                            <Typography variant="body1" sx={{ whiteSpace: 'pre-line', color: 'white' }}>
-                                {content.diagnosis}
-                            </Typography>
+                            <TextareaAutosize
+                                value={content.diagnosis}
+                                onChange={handleChange}
+                                style={{
+                                    width: "100%",
+                                    minHeight: "150px",
+                                    backgroundColor: "transparent",
+                                    color: "white",
+                                    border: "none",
+                                    resize: "none",
+                                    outline: "none",
+                                    fontSize: "16px",
+                                    fontFamily: "Roboto, sans-serif",
+                                }}
+                                placeholder="Edite este texto..."
+                            />
                         </Paper>
                     </Grid>
                 </Grid>

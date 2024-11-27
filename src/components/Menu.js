@@ -21,19 +21,17 @@ function NavBar() {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const { userRole } = useUser();
     const navigate = useNavigate();
-    const location = useLocation(); // Hook para pegar a URL atual
-    const [selectedPage, setSelectedPage] = React.useState(''); // Adicione o estado para a página selecionada
+    const location = useLocation();
+    const [selectedPage, setSelectedPage] = React.useState('');
 
     const doctorPages = ['Análise', 'Pacientes'];
     const patientPages = ['Tela Inicial', 'Documentos'];
     const atendentesPages = ['Usuários'];
     const settings = ['Logout'];
 
-    // const pages = userRole === 'Médico' ? doctorPages : patientPages;
     const pages = userRole === 'Médico' ? doctorPages : userRole === 'Paciente' ? patientPages : atendentesPages;
 
   
-    // Atualize o estado 'selectedPage' baseado na URL atual
     React.useEffect(() => {
       const path = location.pathname;
 
@@ -49,7 +47,7 @@ function NavBar() {
     }, [location]);
 
     const handleMenuItemClick = (page) => {
-      setSelectedPage(page); // Defina a página selecionada
+      setSelectedPage(page);
       if (page === "Tela Inicial"){
         navigate('/');
       } else if (page === "Documentos"){

@@ -51,7 +51,14 @@ export default function DocumentsPatients() {
         } finally {
             setLoading(false);
         }
-    }
+    };
+
+    const formatDate = (dateString) => {
+        return new Intl.DateTimeFormat("pt-BR", {
+            dateStyle: "short",
+            timeStyle: "short",
+        }).format(new Date(dateString));
+    };
 
     return (
         <React.Fragment>
@@ -69,11 +76,11 @@ export default function DocumentsPatients() {
                                 sx={{backgroundColor: '#364257',
                                         color: '#FFF',
                                         marginTop: "10px",
-                                        width: "250px",
+                                        width: "300px",
                                         height: "50px"}}
                                 onClick={() => HandleChangeName(file.id, file.name)}
                                 >
-                                {file.name}
+                                {file.name} - {formatDate(file.uploaded_at)}
                             </Button>
                         ))}
                     </Grid>

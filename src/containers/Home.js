@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid'
 import { Paper, Typography } from '@mui/material';
 import { paperStyle } from "../utils";
 import { BACKGROUND_BUTTON } from "../utils";
-// import Video from "../images/video.mp4"
+
 
 export default function Home() {
     return (
@@ -19,7 +19,7 @@ export default function Home() {
                     </Grid>
                     <Grid item xs={12} sx={{ padding: "80px" }}>
                         <Typography variant="body1" align="center">
-                            Nossa aplicação utiliza tecnologias avançadas de Inteligência Artificial e Processamento de Linguagem Natural para transformar relatórios médicos em PDF em diagnósticos preliminares rápidos e precisos. Desenvolvida com o objetivo de aprimorar a eficiência dos processos clínicos, nossa ferramenta oferece aos profissionais de saúde uma maneira intuitiva e eficaz de acessar insights e melhorar o atendimento aos pacientes.
+                            Nossa aplicação utiliza tecnologias avançadas de Inteligência Artificial e Processamento de Linguagem Natural para transformar relatórios médicos em PDF em pré-diagnósticos preliminares rápidos e precisos. Desenvolvida com o objetivo de aprimorar a eficiência dos processos clínicos, nossa ferramenta oferece aos profissionais de saúde uma maneira intuitiva e eficaz de acessar insights e melhorar o atendimento aos pacientes.
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
@@ -27,12 +27,17 @@ export default function Home() {
                             Vídeo de Apresentação
                         </Typography>
                     </Grid>
-                    {/* <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
-                        <video width="800" height="450" controls>
-                            <source src={Video} type="video/mp4" />
-                            Seu navegador não suporta a tag de vídeo.
-                        </video>
-                    </Grid> */}
+                    <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
+                        <iframe
+                            width="800"
+                            height="450"
+                            src="https://www.youtube.com/embed/ZVe0vE2ij3w"
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                    </Grid>
                 </Grid>
             </Paper>
             <Typography align="center" sx={{ marginTop: '20px', color: '#BDBDBD' }}>
