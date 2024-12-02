@@ -93,6 +93,18 @@ export const deleteFile = async (id) => {
 
 
 export const diagnosisGenerate = async (id, data) => {
+  const key = CryptoJS.enc.Utf8.parse(process.env.REACT_APP_KEY_CRYPTOGRAPHY);
+  const iv = CryptoJS.enc.Utf8.parse(process.env.REACT_APP_KEY_CRYPTOGRAPHY);
+
+  const encryptedPassword = CryptoJS.AES.encrypt(data.password, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7
+  }).toString();
+
+  console.log(encryptedPassword);
+  data.password = encryptedPassword;
+
   try {
     const response = await axios.post(`${API_BASE_URL}/diagnosis/generate/${id}/`, data, getConfig());
     return response.data;
