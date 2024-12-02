@@ -6,6 +6,8 @@ import { uploadFile, getPatients, deleteFile, diagnosisGenerate } from '../axios
 import LoadingScreen from '../components/LoadingScreen';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PatientSelectionModal from '../components/PatientSelectionModal';
+import PasswordModal from '../components/PasswordModal';
+import ErrorModal from '../components/ErrorModal';
 
 
 export default function DocUp() {
@@ -14,16 +16,21 @@ export default function DocUp() {
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState('');
     const [openModal, setOpenModal] = useState(false);
-    
+    const [password, setPassword] = useState('');
+    const [openPasswordModal, setOpenPasswordModal] = useState(false);
+    const [openErrorModal, setOpenErrorModal] = useState(false);
     const [patients, setPatients] = useState([]);
     const [idFile, setIdFile] = useState(0);
     const [selectedPatient, setSelectedPatient] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
         listPatients();
         if (content === '') postUploadFile();
     }, [content]);
+
+    const handleCloseErrorModal = () => setOpenErrorModal(false);
 
     const listPatients = async () => {
         setLoading(true);
@@ -72,16 +79,26 @@ export default function DocUp() {
         setLoading(true);
 
         const data = {
-            "idUser": selectedPatient.id
+            "idUser": selectedPatient.id,
+            "password": password
         }
 
         try {
             const response = await diagnosisGenerate(idFile, data);
             setLoading(false);
             navigate('/diagnosis', {state: { content: response, idFile }})
-            // navigate('/analise', { state: { successPage: true } })
         } catch (error) {
-            console.error('Erro no upload:', error);
+            setLoading(false);
+            if (error.response && error.response.status === 401) {
+                setErrorMessage('Senha incorreta. Tente novamente.');
+                setPassword('');
+                setOpenErrorModal(true);
+            } else {
+                setOpenPasswordModal(false);
+                setOpenErrorModal(true);
+                setErrorMessage('Erro desconhecido. Tente novamente.');
+                console.error('Erro desconhecido:', error);
+            }
         }        
     };
 
@@ -111,7 +128,7 @@ export default function DocUp() {
                 <Button
                     variant="contained"
                     sx={buttonStyles}
-                    onClick={confirmUpload}
+                    onClick={() => setOpenPasswordModal(true)}
                     disabled={!selectedPatient}
                 >
                     Confirmar
@@ -161,6 +178,20 @@ export default function DocUp() {
                 onSelectPatient={handleSelectPatient}
                 patients={patients}
             />
+
+            <PasswordModal
+                open={openPasswordModal}
+                handleClose={() => setOpenPasswordModal(false)}
+                handleConfirm={() => confirmUpload()}
+                setPassword={setPassword}
+            />
+
+            <ErrorModal
+                open={openErrorModal}
+                handleClose={handleCloseErrorModal}
+                errorMessage={errorMessage}
+            />
+
 
         </React.Fragment>
     );

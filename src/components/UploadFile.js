@@ -56,35 +56,43 @@ export default function UploadFile(props) {
     };
 
     const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        setDataFile(file);
-    }
-
+      const file = event.target.files[0];
+  
+      // Verifica se o arquivo existe e se é do tipo PDF
+      if (file && file.type === "application/pdf") {
+          setDataFile(file);
+      } else {
+          // Exibe uma mensagem de erro se o arquivo não for PDF
+          setOpen(true);
+      }
+  };
+  
   return (
-    <React.Fragment>
-        <Button 
-            component="label"
-            variant="contained"
-            sx={{...buttonStyles, width: "auto"}}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            startIcon={<CloudUploadIcon />}
-            >
-                Selecione arquivo
-            <VisuallyHiddenInput 
-                type="file"
-                onChange={handleFileChange}
-            />
-        </Button>
-        <Stack spacing={2} sx={{ width: '100%' }}>
-          <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-              Impossivel ler esse arquivo!
-            </Alert>
-          </Snackbar>
-      </Stack>
-    </React.Fragment>
-  );
+      <React.Fragment>
+          <Button 
+              component="label"
+              variant="contained"
+              sx={{...buttonStyles, width: "auto"}}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              startIcon={<CloudUploadIcon />}
+          >
+              Selecione arquivo
+              <VisuallyHiddenInput 
+                  type="file"
+                  accept="application/pdf" // Limita o seletor de arquivos para PDFs
+                  onChange={handleFileChange}
+              />
+          </Button>
+          <Stack spacing={2} sx={{ width: '100%' }}>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+              <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                Apenas arquivos PDF são permitidos!
+              </Alert>
+            </Snackbar>
+        </Stack>
+      </React.Fragment>
+  );  
 }

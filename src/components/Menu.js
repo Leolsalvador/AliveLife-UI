@@ -62,6 +62,7 @@ function NavBar() {
     const handleMenuItemClickSettings = (setting) => {
       if (setting === "Logout"){
         localStorage.removeItem('userToken');
+        localStorage.removeItem('userRole');
         navigate('/login');
       }
     };

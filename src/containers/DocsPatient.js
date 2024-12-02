@@ -13,6 +13,10 @@ export default function DocumentsPatients() {
     const [patient, setPatient] = useState("");
     const [medical, setMedical] = useState("");
     const [fileName, setFileName] = useState("");
+    const [patientLastName, setPatientLastName] = useState("");
+    const [medicalLastName, setMedicalLastName] = useState("");
+    const [CRM, setCRM] = useState("");
+    const [ufCrm, setUfCrm] = useState("");
     const location = useLocation();
     const { patientId } = location.state || {};
 
@@ -44,6 +48,10 @@ export default function DocumentsPatients() {
                 setDiagnosis(diagnosisData.diagnosis);
                 setPatient(diagnosisData.patient);
                 setMedical(diagnosisData.Medical);
+                setPatientLastName(diagnosisData.patient_last_name);
+                setMedicalLastName(diagnosisData.Medical_last_name);
+                setCRM(diagnosisData.CRM);
+                setUfCrm(diagnosisData.uf_crm);
                 setFileName(name);  
             }
         } catch (err) {
@@ -117,10 +125,10 @@ export default function DocumentsPatients() {
 
                             <Box sx={{ marginBottom: "20px" }}>
                                 <Typography variant="body1">
-                                    <strong>Paciente:</strong> {patient}
+                                    <strong>Paciente:</strong> {patient} {patientLastName}
                                 </Typography>
                                 <Typography variant="body1">
-                                    <strong>Médico Solicitante:</strong> Dr. {medical}
+                                    <strong>Médico Solicitante:</strong> Dr. {medical} {medicalLastName}
                                 </Typography>
                             </Box>
                             <Typography variant="body1">
@@ -133,7 +141,7 @@ export default function DocumentsPatients() {
                             </Typography>
                             <Typography variant="body1" sx={{ marginTop: "20px" }}>
                                 Assinado: <br />
-                                Dr. {medical} <br />
+                                Dr. {medical} {medicalLastName} - {CRM} {ufCrm}<br />
                             </Typography>
                         </Grid>
                     )}

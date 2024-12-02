@@ -19,8 +19,17 @@ function getSessionIdFromCookies() {
 }
 
 const removeSessionIdFromCookies = () => {
+  // Tenta remover o sessionid com o caminho padrão "/"
   document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  
+  // Tenta remover o sessionid sem um caminho explícito
+  document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+  
+  // Opcional: Limpa localStorage ou outros dados de sessão
+  localStorage.removeItem('userToken');
+  localStorage.removeItem('userRole');
 };
+
 
 const isAuthenticated = async () => {
   const userToken = localStorage.getItem('userToken');
