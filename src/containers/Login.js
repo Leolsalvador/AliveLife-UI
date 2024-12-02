@@ -63,7 +63,7 @@ export default function Login() {
       if (response.data.user_role === 'Médico')
         navigate('/analise');
       else if (response.data.user_role === 'Paciente')
-        navigate('/documents');
+        navigate('/');
       else if (response.data.user_role === 'Atendente')
         navigate('/users');
       else
@@ -137,7 +137,7 @@ export default function Login() {
                 required
                 fullWidth
                 id="username"
-                label="Username"
+                label="Usuário"
                 name="username"
                 autoComplete="username"
                 autoFocus
@@ -159,7 +159,7 @@ export default function Login() {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Senhas"
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -366,7 +366,7 @@ export default function Login() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2, ...buttonStyles }}
               >
-                Login
+                Entrar
               </Button>
             </Box>
           </Box>
